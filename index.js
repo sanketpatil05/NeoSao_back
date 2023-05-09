@@ -1,7 +1,7 @@
 
 const express = require("express");
 const { connection } = require("./config/db");
-
+const Image=require("./model/image.model")
 const cors = require('cors');
 const app = express();
 const cloudinary = require("cloudinary");
@@ -58,16 +58,36 @@ return cloudinary.uploader.upload(path,{"public_id":filePathOnCloudinary})
 
 
 
-app.post('/imageUpload', upload.single('url'), async (req, res, next) => {
+app.post('/imageUpload', upload.single('url'), async (req, res, ) => {
 
 var path = req.file.path
-// console.log(path)
+//console.log(req.query)
 var result = await uploadToCloudinary(path)
-console.log(result)
 
-return res.send(result.url)
+  
+const data={
+  image_type:req.query.type,
+  url:result.url
+}  
+const image_data=await Image.insertMany([data])
+return res.send(image_data)
+
+ 
 })
 
+app.get("/images/:id",async(req,res)=>{
+  
+   const{id}=req.params; 
+   const data=await Image.find({image_type:id});
+
+   res.send(data)
+
+})
+app.get("/images",async(req,res)=>{
+
+  const data=await Image.find();
+  res.send(data);
+})
 
 app.get("/", (req, res) => {
  
