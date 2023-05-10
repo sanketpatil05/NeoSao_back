@@ -91,7 +91,7 @@ app.get("/images",async(req,res)=>{
 
 app.get("/", (req, res) => {
  
-  res.send("welcome to home page");
+  res.send("welcome to home page of app");
 });
 
  
